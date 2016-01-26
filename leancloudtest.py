@@ -41,7 +41,7 @@ class EveryDay(Object):
 leancloud.init('qazb7phh0uxqarjyd0agnbw7qwu65xff0e98sbbejfx8wyat', master_key='awfwb8rjhozpmmilpf7r339jx3qcjyuai7nqkk1qwfbnhu9x')
 
 #remove old data
-
+'''
 query = Query(SZStockData)
 query.limit(1000)
 objlist = query.find()
@@ -86,7 +86,7 @@ query = Query(EveryDay)
 objlist = query.find()
 for x in objlist:	
 	x.destroy()
-
+'''
 
 
 
@@ -138,7 +138,15 @@ for x in datas:
 	item.set("tiaokong",x['tiaokong'])
 	item.set("bvps",x['bvps'])	
 	item.set("highbreakout",x['highbreakout'])
-	item.save()
+	item.set("diverse10",x['diverse10'])
+	repeated = 1
+	while repeated:
+		try:
+			item.save()
+			repeated=0
+		except Exception, e:
+			print "exception on save :",x['stcode'],e
+			time.sleep(5)		
 	
 f.close()
 
@@ -186,7 +194,15 @@ for x in szdatas:
 	item.set("tiaokong",x['tiaokong'])
 	item.set("bvps",x['bvps'])	
 	item.set("highbreakout",x['highbreakout'])
-	item.save()
+	item.set("diverse10",x['diverse10'])
+	repeated = 1
+	while repeated:
+		try:
+			item.save()
+			repeated=0
+		except Exception, e:
+			print "exception on save :",x['stcode'],e
+			time.sleep(5)		
 
 f.close()
 
@@ -232,15 +248,36 @@ for x in szdatas:
 	item.set("tiaokong",x['tiaokong'])
 	item.set("bvps",x['bvps'])	
 	item.set("highbreakout",x['highbreakout'])
-	item.save()
+	item.set("diverse10",x['diverse10'])
+	repeated = 1
+	while repeated:
+		try:
+			item.save()
+			repeated=0
+		except Exception, e:
+			print "exception on save :",x['stcode'],e
+			time.sleep(5)		
 
 f.close()
 
 
+
+query = Query(EveryDay)
+objlist = query.find()
+for x in objlist:
+	x.destroy()
 upinfo = time.strftime('%Y-%m-%d %H:%M',time.localtime())
 dd = EveryDay()
 dd.set('date',upinfo)
-dd.save()
+repeated = 1
+while repeated:
+	try:
+		dd.save()
+		repeated=0
+	except Exception, e:
+		print "exception on save update time:",e
+		time.sleep(5)		
+
 
 
 

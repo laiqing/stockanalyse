@@ -62,8 +62,9 @@ for x in res:
 	aa['stcode']=x['stcode']
 	gn.append(aa)
 
-
-datas.insert(res)
+if len(res)>0:
+	print "now insert results...",len(res)
+	datas.insert(res)
 
 
 
