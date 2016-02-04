@@ -138,7 +138,10 @@ for x in datas:
 	item.set("tiaokong",x['tiaokong'])
 	item.set("bvps",x['bvps'])	
 	item.set("highbreakout",x['highbreakout'])
-	item.set("diverse10",x['diverse10'])
+	item.set("diverse10",str(x['diverse10']))
+	item.set("weekmacd",str(x['weekmacd']))
+	item.set("weekkdj",str(x['weekkdj']))
+	item.set("weekhighmacd",str(x['weekhighmacd']))
 	repeated = 1
 	while repeated:
 		try:
@@ -194,7 +197,10 @@ for x in szdatas:
 	item.set("tiaokong",x['tiaokong'])
 	item.set("bvps",x['bvps'])	
 	item.set("highbreakout",x['highbreakout'])
-	item.set("diverse10",x['diverse10'])
+	item.set("diverse10",str(x['diverse10']))
+	item.set("weekmacd",str(x['weekmacd']))
+	item.set("weekkdj",str(x['weekkdj']))
+	item.set("weekhighmacd",str(x['weekhighmacd']))
 	repeated = 1
 	while repeated:
 		try:
@@ -248,7 +254,10 @@ for x in szdatas:
 	item.set("tiaokong",x['tiaokong'])
 	item.set("bvps",x['bvps'])	
 	item.set("highbreakout",x['highbreakout'])
-	item.set("diverse10",x['diverse10'])
+	item.set("diverse10",str(x['diverse10']))
+	item.set("weekmacd",str(x['weekmacd']))
+	item.set("weekkdj",str(x['weekkdj']))
+	item.set("weekhighmacd",str(x['weekhighmacd']))
 	repeated = 1
 	while repeated:
 		try:

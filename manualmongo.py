@@ -20,78 +20,7 @@ import json
 socket.setdefaulttimeout(10.0) 
 
 
-def calcWeekMacd(stockCode):
-	pa = os.getcwd()
-	if os.path.exists(pa+'/'+stockCode+'_weekewma.csv')==False:
-		return 0
-	stock_data = pandas.read_csv(stockCode+'_weekewma.csv')
-	co = stock_data['close'].count()
-	if co<=30:
-		return 0
-	sco = stock_data['DEA'].count()
-	yesterdayk = stock_data['DIFF'][co-2]
-	k = stock_data['DIFF'][co-1]
-	yesterdayd = stock_data['DEA'][co-2]
-	d = stock_data['DEA'][co-1]
-	if (yesterdayk < yesterdayd) and (k>=d):
-		#get the angle
-		k1 = math.atan(d-yesterdayd)
-		k2 = math.atan(k-yesterdayk)
-		d1 = math.degrees(k1)
-		d2 = math.degrees(k2)
-		if d1<0:
-			d1 = -d1	
-		d = d1+d2
-		if d>90:
-			d = d-90		
-		return numpy.round(d)
-	else:
-		return 0
 
-def calcWeekHighMacd(stockCode):
-	pa = os.getcwd()
-	if os.path.exists(pa+'/'+stockCode+'_weekewma.csv')==False:
-		return 0
-	stock_data = pandas.read_csv(stockCode+'_weekewma.csv')
-	co = stock_data['close'].count()
-	if co<=30:
-		return 0	
-	k = stock_data['DIFF'][co-1]	
-	d = stock_data['DEA'][co-1]
-	if (k>0) and (d>0):
-		return 1
-	else:
-		return 0
-	
-
-def calcWeekKDJ(stockCode):
-	#KDJ params is 9 , 3
-	pa = os.getcwd()
-	if os.path.exists(pa+'/'+stockCode+'_weekewma.csv')==False:
-		return 0
-	stock_data = pandas.read_csv(stockCode+'_weekewma.csv')
-	co = stock_data['close'].count()
-	if co<=30:
-		return 0
-	#co = stock_data['quick_d'].count()
-	sco = stock_data['slow_d'].count()
-	yesterdayk = stock_data['quick_d'][co-2]
-	k = stock_data['quick_d'][co-1]
-	yesterdayd = stock_data['slow_d'][co-2]
-	d = stock_data['slow_d'][co-1]
-	if (yesterdayk < yesterdayd) and (k>=d):
-		k1 = math.atan(d-yesterdayd)
-		k2 = math.atan(k-yesterdayk)
-		d1 = math.degrees(k1)
-		d2 = math.degrees(k2)
-		if d1<0:
-			d1 = -d1
-		d = d1+d2
-		if d>90:
-			d = d-90
-		return numpy.round(d)
-	else:
-		return 0
 
 def calcKDJ(stockCode):
 	#KDJ params is 9 , 3
@@ -294,10 +223,9 @@ def chaoDi(stockCode):
 	ema5 = stock_data['EMA5'][co-1]
 	todayv = stock_data['volume'][co-1]
 	yesterdayv = stock_data['volume'][co-2]
-	#todaylow = stock_data['low'][co-1]
-	#yesterdayhigh = stock_data['high'][co-2]
-	#remove the todaylow > yesterdayhigh , it means tiaokong
-	if (todayclose > ma3*1.055) and (todayclose > ema5) and  (todayv > yesterdayv*1.2):
+	todaylow = stock_data['low'][co-1]
+	yesterdayhigh = stock_data['high'][co-2]
+	if (todayclose > ma3*1.055) and (todayclose > ema5) and (todaylow > yesterdayhigh) and (todayv > yesterdayv*1.2):
 		return 1
 	else:
 		return 0
@@ -448,25 +376,6 @@ def getpressandsupport(stockCode):
 			highest = stock_data['high'][x]
 	return str(lowest)+"-"+str(highest)
 
-def gethighbreakout(stockCode):
-	pa = os.getcwd()
-	if os.path.exists(pa+'/'+stockCode+'_ewma.csv')==False:
-		return 0
-	stock_data = pandas.read_csv(stockCode+'_ewma.csv')
-	co = stock_data['close'].count()
-	if co<=60:
-		return 0
-	highest = stock_data['high'][co-60]	
-	r = range(co-60,co-1)
-	for x in r:		
-		if highest<stock_data['high'][x]:
-			highest = stock_data['high'][x]
-	todayhigh = stock_data['high'][co-1]
-	if todayhigh>=highest:
-		return 1
-	else:
-		return 0
-
 def getpercent(stockCode):
 	pa = os.getcwd()
 	if os.path.exists(pa+'/'+stockCode+'_ewma.csv')==False:
@@ -517,15 +426,14 @@ def getLastDay(stockCode):
 	if co<1:
 		return 0
 	day = time.strftime('%d',time.localtime())
-	#if day[0]=='0':
-	#	day = day[1:]
+	if day[0]=='0':
+		day = day[1:]
 	mo = time.strftime('%m',time.localtime())
-	#if mo[0]=='0':
-	#	mo = mo[1:]
+	if mo[0]=='0':
+		mo = mo[1:]
 	too = time.strftime('%Y',time.localtime())
-	today = too+"-"+mo+"-"+day
-	#print today
-	#print str(stock_data['date'][co-1])
+	#today = too+"-"+mo+"-"+day
+	today = sys.argv[1]
 	if str(stock_data['date'][co-1])==today:
 		return 1
 	else:
@@ -550,124 +458,6 @@ def getbasic(stockCode):
 	b['esp'] = stock_data['esp'][idx]
 	b['bvps'] = stock_data['bvps'][idx]
 	return b
-
-
-def getEMALow(stockCode):
-	pa = os.getcwd()
-	if os.path.exists(pa+'/'+stockCode+'_ewma.csv')==False:
-		return 0
-	stock_data = pandas.read_csv(stockCode+'_ewma.csv')
-	co = stock_data['close'].count()
-	if co<30:
-		return ""
-	restr = str(stock_data['EMA5LOW'][co-1])+","+str(stock_data['EMA10LOW'][co-1])+","+str(stock_data['EMA15LOW'][co-1])+","+str(stock_data['EMA20LOW'][co-1])
-	return restr
-
-def getbollmidup(stockCode):
-	pa = os.getcwd()
-	if os.path.exists(pa+'/'+stockCode+'_ewma.csv')==False:
-		return 0
-	stock_data = pandas.read_csv(stockCode+'_ewma.csv')
-	co = stock_data['close'].count()
-	if co<30:
-		return 0
-	m1 = stock_data['EMA14'][co-2]
-	m = stock_data['EMA14'][co-1]
-	if m>m1:
-		return 1
-	else:
-		return 0
-
-def getstopen(stockCode):
-	pa = os.getcwd()
-	if os.path.exists(pa+'/'+stockCode+'_ewma.csv')==False:
-		return 0
-	stock_data = pandas.read_csv(stockCode+'_ewma.csv')
-	co = stock_data['close'].count()
-	if co<=0:
-		return 0
-	m1 = stock_data['open'][co-1]
-	return m1
-
-def getstclose(stockCode):
-	pa = os.getcwd()
-	if os.path.exists(pa+'/'+stockCode+'_ewma.csv')==False:
-		return 0
-	stock_data = pandas.read_csv(stockCode+'_ewma.csv')
-	co = stock_data['close'].count()
-	if co<=0:
-		return 0
-	m1 = stock_data['close'][co-1]
-	return m1
-
-def getsthigh(stockCode):
-	pa = os.getcwd()
-	if os.path.exists(pa+'/'+stockCode+'_ewma.csv')==False:
-		return 0
-	stock_data = pandas.read_csv(stockCode+'_ewma.csv')
-	co = stock_data['close'].count()
-	if co<=0:
-		return 0
-	m1 = stock_data['high'][co-1]
-	return m1
-	
-def getstlow(stockCode):
-	pa = os.getcwd()
-	if os.path.exists(pa+'/'+stockCode+'_ewma.csv')==False:
-		return 0
-	stock_data = pandas.read_csv(stockCode+'_ewma.csv')
-	co = stock_data['close'].count()
-	if co<=0:
-		return 0
-	m1 = stock_data['low'][co-1]
-	return m1
-
-def getema15percent(stockCode):
-	pa = os.getcwd()
-	if os.path.exists(pa+'/'+stockCode+'_ewma.csv')==False:
-		return 0
-	stock_data = pandas.read_csv(stockCode+'_ewma.csv')
-	co = stock_data['close'].count()
-	if co<=30:
-		return 0
-	m1 = stock_data['EMA15PER'][co-1]
-	return m1
-
-def getstpercent(stockCode):
-	pa = os.getcwd()
-	if os.path.exists(pa+'/'+stockCode+'_ewma.csv')==False:
-		return 0
-	stock_data = pandas.read_csv(stockCode+'_ewma.csv')
-	co = stock_data['close'].count()
-	if co<=1:
-		return 0
-	m1 = stock_data['percent'][co-1]
-	return m1*100
-
-def getdiverse(stockCode):
-	pa = os.getcwd()
-	if os.path.exists(pa+'/'+stockCode+'_ewma.csv')==False:
-		return 0
-	stock_data = pandas.read_csv(stockCode+'_ewma.csv')
-	co = stock_data['close'].count()
-	if co<=30:
-		return 0
-	d = stock_data['EMA10'][co-1]
-	c = stock_data['low'][co-1]
-	vd = numpy.round((c-d)/d*100,2)
-
-	vd1 = 0
-	if co>250:
-		d1 = stock_data['EMA250'][co-1]
-		vd1 = numpy.round((c-d1)/d1*100,2)
-
-	vd2 = 0
-	if co>888:
-		d2 = stock_data['EMA888'][co-1]
-		vd2 = numpy.round((c-d2)/d2*100,2)
-
-	return str(vd)+';'+str(vd1)+';'+str(vd2)
-
 
 
 
@@ -725,12 +515,13 @@ collections.insert(plist)
 
 
 #insert data to 
+'''
 stcode=[]
 stname=[]
 stbelong=[]
 stgn=[]
 
-'''
+
 f = codecs.open('stname.txt','r',encoding='utf-8')
 for line in f.readlines():
 	stname.append(line.strip())
@@ -750,7 +541,6 @@ f= codecs.open('stgn.txt','r',encoding='utf-8')
 for line in f.readlines():
 	stgn.append(line.strip())
 f.close()
-'''
 
 
 collections = client.jiucaidi['everydaysh']
@@ -773,7 +563,7 @@ rssh=[]
 rssz=[]
 rscy=[]
 
-fff = codecs.open('allstdata3.json','r',encoding='utf-8')
+fff = codecs.open('allstdata.json','r',encoding='utf-8')
 sss = json.loads(fff.read())
 
 
@@ -782,7 +572,6 @@ for x in sss:
 	print x['stcode']
 	reo = getLastDay(x['stcode'])
 	if reo==0:
-		print "not today"
 		continue
 	p = {}
 
@@ -798,7 +587,6 @@ for x in sss:
 	p['stname']=x['stname']
 	p['stbelong']=x['stbelong']
 	p['stgn']=x['stgn']
-	p['gpjj']=x['gpjj']
 	tcode = x['stcode']
 	p['macd']=calcMACD(tcode)
 	p['macdback']=calcMACDback(tcode)
@@ -816,46 +604,41 @@ for x in sss:
 	p['spandpr']=getpressandsupport(tcode)
 	p['ejd']=getJDZS(tcode)
 	p['tiaokong']=getTiaoKong(tcode)
-	p['emalow']=getEMALow(tcode)
-	p['bollmidup']=getbollmidup(tcode)
-	p['open']=getstopen(tcode)
-	p['close']=getstclose(tcode)
-	p['high']=getsthigh(tcode)
-	p['low']=getstlow(tcode)
-	p['percent']=getstpercent(tcode)
-	p['ema15per']=getema15percent(tcode)
-	p['highbreakout']=gethighbreakout(tcode)
-	p['diverse10']=getdiverse(tcode)
-	p['weekmacd']=calcWeekMacd(tcode)
-	p['weekkdj']=calcWeekKDJ(tcode)
-	p['weekhighmacd']=calcWeekHighMacd(tcode)
 
 	if tcode.find('SH')>-1:
+		print "add to sh[]"
 		rssh.append(p)
 	elif tcode.find('SZ0')>-1:
+		print "add to sz[]"
 		rssz.append(p)
 	else:
+		print "add to cy[]"
 		rscy.append(p)	
 	i += 1
+'''
 
-shstr = json.dumps(rssh,ensure_ascii=False,indent=4)
-szstr = json.dumps(rssz,ensure_ascii=False,indent=4)
-cystr = json.dumps(rscy,ensure_ascii=False,indent=4)
-ff = codecs.open('shdata.json','w',encoding='utf-8')
-ff.write(shstr)
-ff.close()
-ff = codecs.open('szdata.json','w',encoding='utf-8')
-ff.write(szstr)
-ff.close()
-ff = codecs.open('cydata.json','w',encoding='utf-8')
-ff.write(cystr)
-ff.close()
+collections = client.jiucaidi['everydaysh']
+collections.remove()
+collections.create_index("stcode")
+collections.create_index("macd")
+collections.create_index("kdj")
+collections.create_index("macdback")
+collections.create_index("kdjback")
+collections.create_index("thirtydaysgrow")
+collections.create_index("macdback")
+collections.create_index("bollstd")#tu po boll up line, and mid up
+collections.create_index("volume")
+collections.create_index("rsi")
+collections.create_index("chaobaoluo")
+collections.create_index("realchaobaoluo")
+collections.create_index("percent")
 
-print "insert to mongo db shanghai data"
-collections.insert(rssh)
+print "insert sh data"
+f = codecs.open('shdata.json','r',encoding='utf-8')
+shdatas = json.loads(f.read())
+collections.insert(shdatas)
+f.close()
 
-
-print "insert to mongo db shenzhen data"
 co2 = client.jiucaidi['everydaysz']
 co2.remove()
 co2.create_index("stcode")
@@ -871,10 +654,14 @@ co2.create_index("rsi")
 co2.create_index("chaobaoluo")
 co2.create_index("realchaobaoluo")
 co2.create_index("percent")
-co2.insert(rssz)
+
+print "insert sz data"
+f = codecs.open('szdata.json','r',encoding='utf-8')
+szdatas = json.loads(f.read())
+co2.insert(szdatas)
+f.close()
 
 
-print "insert to mongo db chuangyeban data"
 co3 = client.jiucaidi['everydaycy']
 co3.remove()
 co3.create_index("stcode")
@@ -890,7 +677,14 @@ co3.create_index("rsi")
 co3.create_index("chaobaoluo")
 co3.create_index("realchaobaoluo")
 co3.create_index("percent")
-co3.insert(rscy)
+
+
+print "insert cy data"
+f = codecs.open('cydata.json','r',encoding='utf-8')
+cydatas = json.loads(f.read())
+co3.insert(cydatas)
+f.close()
+
 
 
 
@@ -899,7 +693,6 @@ upinfo = time.strftime('%Y-%m-%d %H:%M',time.localtime())
 collections2 = client.jiucaidi.updateinfo
 collections2.remove()
 collections2.insert({"table":"everyday","date":upinfo})
-
 
 
 
