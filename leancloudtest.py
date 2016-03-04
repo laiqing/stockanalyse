@@ -142,6 +142,9 @@ for x in datas:
 	item.set("weekmacd",str(x['weekmacd']))
 	item.set("weekkdj",str(x['weekkdj']))
 	item.set("weekhighmacd",str(x['weekhighmacd']))
+	item.set("weekmacdback",x['weekmacdback'])
+	item.set("weekkdjback",x['weekkdjback'])
+	item.set("fourdayfluck",x['fourdayfluck'])
 	repeated = 1
 	while repeated:
 		try:
@@ -201,6 +204,9 @@ for x in szdatas:
 	item.set("weekmacd",str(x['weekmacd']))
 	item.set("weekkdj",str(x['weekkdj']))
 	item.set("weekhighmacd",str(x['weekhighmacd']))
+	item.set("weekmacdback",x['weekmacdback'])
+	item.set("weekkdjback",x['weekkdjback'])
+	item.set("fourdayfluck",x['fourdayfluck'])
 	repeated = 1
 	while repeated:
 		try:
@@ -258,6 +264,9 @@ for x in szdatas:
 	item.set("weekmacd",str(x['weekmacd']))
 	item.set("weekkdj",str(x['weekkdj']))
 	item.set("weekhighmacd",str(x['weekhighmacd']))
+	item.set("weekmacdback",x['weekmacdback'])
+	item.set("weekkdjback",x['weekkdjback'])
+	item.set("fourdayfluck",x['fourdayfluck'])
 	repeated = 1
 	while repeated:
 		try:

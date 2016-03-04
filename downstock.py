@@ -260,9 +260,11 @@ def calcAllInstructor(stockCode):
 	stock_data['EMA10'] = numpy.round(pandas.ewma(stock_data['close'],span=10),3)
 	stock_data['EMA14'] = numpy.round(pandas.ewma(stock_data['close'],span=14),3)
 	stock_data['EMA20'] = numpy.round(pandas.ewma(stock_data['close'],span=20),3)
+	stock_data['EMA30'] = numpy.round(pandas.ewma(stock_data['close'],span=30),3)
+	stock_data['EMA22'] = numpy.round(pandas.ewma(stock_data['close'],span=22),3)
 	stock_data['EMA250'] = numpy.round(pandas.ewma(stock_data['close'],span=250),3)
 	stock_data['EMA888'] = numpy.round(pandas.ewma(stock_data['close'],span=888),3)
-	stock_data['DIFF'] = map(lambda x,y:x-y, stock_data['EMA5'],stock_data['EMA10'])
+	stock_data['DIFF'] = map(lambda x,y:x-y, stock_data['EMA10'],stock_data['EMA22'])
 	stock_data['DEA'] = numpy.round(pandas.rolling_mean(stock_data['DIFF'],7),3)
 
 	stock_data['abspercent'] = map(lambda x:x*100 ,stock_data['percent'])
@@ -301,7 +303,12 @@ def calcAllInstructor(stockCode):
 	stock_data['jd'] = map(lambda x,y:x*y, stock_data['amplitude'],stock_data['volume'])
 	stock_data['ejd'] = pandas.ewma(stock_data['jd'],span=3)
 
-	#stock_data['diverse10']=numpy.round(map(lambda x,y:x/y-1,stock_data['close'],stock_data['EMA10']),4)
+	stock_data['newdiverse10']=numpy.round(map(lambda x,y:x/y-1,stock_data['close'],stock_data['EMA10']),4)
+
+	#stock_data['lowvolume89'] = pandas.rolling_min(stock_data['volume'],89)
+	#stock_data['lowvolume144'] = pandas.rolling_min(stock_data['volume'],144)
+	#stock_data['highvolume89'] = pandas.rolling_max(stock_data['volume'],89)
+	#stock_data['highvolume144'] = pandas.rolling_max(stock_data['volume'],144)
 
 	stock_data.to_csv(stockCode+'_ewma.csv')
 

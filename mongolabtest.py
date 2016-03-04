@@ -273,6 +273,126 @@ def calcKDJback(stockCode):
 	return 0
 
 
+def calcWeekMACDback(stockCode):
+	pa = os.getcwd()
+	if os.path.exists(pa+'/'+stockCode+'_weekewma.csv')==False:
+		return 0
+	stock_data = pandas.read_csv(stockCode+'_weekewma.csv')
+	co = stock_data['close'].count()
+	if co<=30:
+		return 0
+	l = range(1,co-1)
+	l.reverse()
+	if stock_data['DIFF'][co-1]>stock_data['DEA'][co-1]:
+		jincha1 = co-1
+		for x in l:
+			if stock_data['DIFF'][x]<stock_data['DEA'][x]:
+				#jincha dian
+				jincha1 = x
+				break
+		sicha1 = jincha1-1
+		l2 = range(1,jincha1)
+		l2.reverse()
+		for x in l2:
+			if stock_data['DIFF'][x]>stock_data['DEA'][x]:
+				#sicha1
+				sicha1 = x
+				break
+		jincha2 = sicha1-1
+		l3 = range(1,sicha1)
+		l3.reverse()
+		for x in l3:
+			if stock_data['DIFF'][x]<stock_data['DEA'][x]:
+				#jincha dian
+				jincha2 = x
+				break
+		sicha2 = jincha2-1
+		l4 = range(1,jincha2)
+		l4.reverse()
+		for x in l4:
+			if stock_data['DIFF'][x]>stock_data['DEA'][x]:
+				sicha2 = x
+				break				
+		#get 2 low point
+		difflow1 = stock_data['DIFF'][sicha2]
+		date1 = sicha2
+		for x in range(sicha2,jincha2):
+			if difflow1>stock_data['DIFF'][x]:
+				difflow1 = stock_data['DIFF'][x]
+				date1 = x
+		difflow2 = stock_data['DIFF'][sicha1]
+		date2 = sicha1
+		for x in range(sicha1,jincha1):
+			if difflow2>stock_data['DIFF'][x]:
+				difflow2=stock_data['DIFF'][x]
+				date2 = x
+		close1 = stock_data['low'][date1]
+		close2 = stock_data['low'][date2]
+		if (close1 <= close2) and (difflow1>difflow2):
+			return 1
+	
+	return 0
+
+
+def calcWeekKDJback(stockCode):
+	pa = os.getcwd()
+	if os.path.exists(pa+'/'+stockCode+'_weekewma.csv')==False:
+		return 0
+	stock_data = pandas.read_csv(stockCode+'_weekewma.csv')
+	co = stock_data['close'].count()
+	if co<=30:
+		return 0
+	l = range(1,co-1)
+	l.reverse()
+	if stock_data['quick_d'][co-1]>stock_data['slow_d'][co-1]:
+		jincha1 = co-1
+		for x in l:
+			if stock_data['quick_d'][x]<stock_data['slow_d'][x]:
+				#jincha dian
+				jincha1 = x
+				break
+		sicha1 = jincha1-1
+		l2 = range(1,jincha1)
+		l2.reverse()
+		for x in l2:
+			if stock_data['quick_d'][x]>stock_data['slow_d'][x]:
+				#sicha1
+				sicha1 = x
+				break
+		jincha2 = sicha1-1
+		l3 = range(1,sicha1)
+		l3.reverse()
+		for x in l3:
+			if stock_data['quick_d'][x]<stock_data['slow_d'][x]:
+				#jincha dian
+				jincha2 = x
+				break
+		sicha2 = jincha2-1
+		l4 = range(1,jincha2)
+		l4.reverse()
+		for x in l4:
+			if stock_data['quick_d'][x]>stock_data['slow_d'][x]:
+				sicha2 = x
+				break				
+		#get 2 low point
+		difflow1 = stock_data['quick_d'][sicha2]
+		date1 = sicha2
+		for x in range(sicha2,jincha2):
+			if difflow1>stock_data['quick_d'][x]:
+				difflow1 = stock_data['quick_d'][x]
+				date1 = x
+		difflow2 = stock_data['quick_d'][sicha1]
+		date2 = sicha1
+		for x in range(sicha1,jincha1):
+			if difflow2>stock_data['quick_d'][x]:
+				difflow2=stock_data['quick_d'][x]
+				date2 = x
+		close1 = stock_data['low'][date1]
+		close2 = stock_data['low'][date2]
+		if (close1 <= close2) and (difflow1>difflow2):
+			return 1
+	
+	return 0
 
 
 def chaoDi(stockCode):
@@ -294,10 +414,12 @@ def chaoDi(stockCode):
 	ema5 = stock_data['EMA5'][co-1]
 	todayv = stock_data['volume'][co-1]
 	yesterdayv = stock_data['volume'][co-2]
+	threedayv = stock_data['volume'][co-3]
 	#todaylow = stock_data['low'][co-1]
 	#yesterdayhigh = stock_data['high'][co-2]
 	#remove the todaylow > yesterdayhigh , it means tiaokong
-	if (todayclose > ma3*1.055) and (todayclose > ema5) and  (todayv > yesterdayv*1.2):
+	#if (todayclose > ma3*1.055) and (todayclose > ema5) and  (todayv > yesterdayv*1.2) and (yesterdayv>threedayv*1.2):
+	if (todayclose > ema5) and  (todayv > yesterdayv*1.2) and (yesterdayv>threedayv*1.2):
 		return 1
 	else:
 		return 0
@@ -320,6 +442,19 @@ def chaoBaoLuo(stockCode):
 		return 1
 	else:
 		return 0
+
+def getFourDayFluck(stockCode):
+	pa = os.getcwd()
+	if os.path.exists(pa+'/'+stockCode+'_ewma.csv')==False:
+		return 0
+	stock_data = pandas.read_csv(stockCode+'_ewma.csv')
+	co = stock_data['close'].count()
+	if co<=30:
+		return 0
+	ma = stock_data['high'][co-1]
+	mi = stock_data['low'][co-4]
+	dt = numpy.round((ma-mi)/mi*100,2)
+	return dt
 
 def getlowdiff(stockCode):
 	pa = os.getcwd()
@@ -829,6 +964,9 @@ for x in sss:
 	p['weekmacd']=calcWeekMacd(tcode)
 	p['weekkdj']=calcWeekKDJ(tcode)
 	p['weekhighmacd']=calcWeekHighMacd(tcode)
+	p['weekmacdback']=calcWeekMACDback(tcode)
+	p['weekkdjback']=calcWeekKDJback(tcode)
+	p['fourdayfluck']=getFourDayFluck(tcode)
 
 	if tcode.find('SH')>-1:
 		rssh.append(p)

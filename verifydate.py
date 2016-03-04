@@ -42,6 +42,7 @@ for x in items:
 			tcode = 'sz'+tcode
 		else:
 			tcode = 'sh'+tcode
+	print tcode
 
 	
 	pa = os.getcwd()
