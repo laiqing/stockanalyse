@@ -235,6 +235,13 @@ def addChaYi(stockCode):
 		return 0
 	stock_data = pandas.read_csv(stockCode+'_ewma.csv')
 	stock_data['diverse10']=numpy.round(map(lambda x,y:x/y-1,stock_data['close'],stock_data['EMA10']),4)
+	co = stock_data['close'].count()
+	lz = range(1,co)
+	fir = stock_data['diverse10'][co-1]
+	for x in lz:
+		if :
+			pass
+
 	stock_data.to_csv(stockCode+'_d10.csv')
 	
 

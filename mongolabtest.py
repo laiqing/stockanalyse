@@ -815,7 +815,7 @@ dbpass = 'jiucaidi1976'
 
 too = time.strftime('%Y_%m_%d',time.localtime())
 upinfo = time.strftime('%Y-%m-%d %H:%M',time.localtime())
-client = pymongo.MongoClient('mongodb://jiucaidiowner:jiucaidi1976@ds059644.mongolab.com:59644/jiucaidi?authMechanism=SCRAM-SHA-1')
+
 #client.jiucaidi.authenticate('jiucaidiowner','jiucaidi1976',mechanism='SCRAM-SHA-1')
 
 
@@ -888,21 +888,6 @@ f.close()
 '''
 
 
-collections = client.jiucaidi['everydaysh']
-collections.remove()
-collections.create_index("stcode")
-collections.create_index("macd")
-collections.create_index("kdj")
-collections.create_index("macdback")
-collections.create_index("kdjback")
-collections.create_index("thirtydaysgrow")
-collections.create_index("macdback")
-collections.create_index("bollstd")#tu po boll up line, and mid up
-collections.create_index("volume")
-collections.create_index("rsi")
-collections.create_index("chaobaoluo")
-collections.create_index("realchaobaoluo")
-collections.create_index("percent")
 
 rssh=[]
 rssz=[]
@@ -989,7 +974,27 @@ ff = codecs.open('cydata.json','w',encoding='utf-8')
 ff.write(cystr)
 ff.close()
 
+print "calculate finish!"
+
+'''
+client = pymongo.MongoClient('mongodb://jiucaidiowner:jiucaidi1976@ds059644.mongolab.com:59644/jiucaidi?authMechanism=SCRAM-SHA-1')
+
 print "insert to mongo db shanghai data"
+collections = client.jiucaidi['everydaysh']
+collections.remove()
+collections.create_index("stcode")
+collections.create_index("macd")
+collections.create_index("kdj")
+collections.create_index("macdback")
+collections.create_index("kdjback")
+collections.create_index("thirtydaysgrow")
+collections.create_index("macdback")
+collections.create_index("bollstd")#tu po boll up line, and mid up
+collections.create_index("volume")
+collections.create_index("rsi")
+collections.create_index("chaobaoluo")
+collections.create_index("realchaobaoluo")
+collections.create_index("percent")
 collections.insert(rssh)
 
 
@@ -1037,7 +1042,7 @@ upinfo = time.strftime('%Y-%m-%d %H:%M',time.localtime())
 collections2 = client.jiucaidi.updateinfo
 collections2.remove()
 collections2.insert({"table":"everyday","date":upinfo})
-
+'''
 
 
 
